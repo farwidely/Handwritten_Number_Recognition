@@ -4,10 +4,10 @@ import torchvision
 # 准备数据集
 # 训练集
 train_dataset = torchvision.datasets.MNIST(root="./data", train=True, transform=torchvision.transforms.ToTensor(),
-                                          download=True)
+                                           download=True)
 # 测试集
 test_dataset = torchvision.datasets.MNIST(root="./data", train=False, transform=torchvision.transforms.ToTensor(),
-                                         download=True)
+                                          download=True)
 
 train_data = Subset(train_dataset, indices=range(0, 6000))
 test_data = Subset(test_dataset, indices=range(0, 1000))
