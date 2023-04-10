@@ -7,18 +7,13 @@ class MyMNIST(nn.Module):
     def __init__(self):
         super(MyMNIST, self).__init__()
         self.model = nn.Sequential(
-            nn.Conv2d(1, 16, 3, 1, 1),
-            nn.ReLU(inplace=True),
-            nn.Conv2d(16, 16, 3, 1, 1),
-            nn.ReLU(inplace=True),
-            nn.MaxPool2d(2, stride=1),
-            nn.Conv2d(16, 32, 3, 1, 1),
+            nn.Conv2d(1, 32, 3, 1, 1),
             nn.ReLU(inplace=True),
             nn.Conv2d(32, 32, 3, 1, 1),
             nn.ReLU(inplace=True),
             nn.MaxPool2d(2, stride=1),
             nn.Flatten(),
-            nn.Linear(26*26*32, 4096),
+            nn.Linear(27*27*32, 4096),
             nn.ReLU(inplace=True),
             nn.Dropout(p=0.5, inplace=False),
             nn.Linear(4096, 10)
