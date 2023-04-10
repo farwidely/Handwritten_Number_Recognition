@@ -56,7 +56,7 @@ class MyMNIST2(nn.Module):
         return x
 
 
-# 测试模型运行
+# 测试模型能否运行
 if __name__ == '__main__':
     model = MyMNIST1()
     input = torch.ones((64, 1, 28, 28))
