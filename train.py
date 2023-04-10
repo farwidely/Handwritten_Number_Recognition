@@ -13,8 +13,8 @@ train_data = torchvision.datasets.MNIST(root="./data", train=True, transform=tor
 test_data = torchvision.datasets.MNIST(root="./data", train=False, transform=torchvision.transforms.ToTensor(),
                                          download=True)
 
-# train_data = Subset(train_dataset, indices=range(0, 6000))
-# test_data = Subset(test_dataset, indices=range(0, 1000))
+# train_data = Subset(train_data, indices=range(0, 6000))
+# test_data = Subset(test_data, indices=range(0, 1000))
 
 # 查看数据集长度
 train_data_size = len(train_data)
