@@ -27,7 +27,7 @@ train_dataloader = DataLoader(train_data, batch_size=64)
 test_dataloader = DataLoader(test_data, batch_size=64)
 
 # 初始化模型
-model = MyMNIST()
+model = MyMNIST1()
 model.to(device)
 
 # 损失函数
@@ -44,7 +44,7 @@ total_train_step = 0
 # 记录测试的次数
 total_test_step = 0
 # 训练的轮数
-epoch = 50
+epoch = 30
 
 for i in range(epoch):
     print(f"------第 {i+1} 轮训练开始------")
@@ -87,6 +87,6 @@ for i in range(epoch):
 
     total_test_step += 1
 
-    if i == 49:
+    if i == 29:
         torch.save(model, f"./trained_models/model_gpu_{i+1}.pth")
         print("模型已保存")
