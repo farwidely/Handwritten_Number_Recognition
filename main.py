@@ -35,7 +35,8 @@ loss_fn.to(device)
 
 # 优化器
 learning_rate = 1e-2
-optimizer = torch.optim.SGD(model.parameters(), lr=learning_rate)
+momentum = 5e-1
+optimizer = torch.optim.SGD(model.parameters(), lr=learning_rate, momentum=momentum)
 
 # 设置训练网络的参数
 # 记录训练的次数
