@@ -1,3 +1,4 @@
+import time
 from torch.utils.data import DataLoader
 import torchvision
 from torchvision import transforms
@@ -46,8 +47,12 @@ total_test_step = 0
 # 训练的轮数
 epoch = 20
 
+start = time.time()
+
 for i in range(epoch):
     print(f"------第 {i + 1} 轮训练开始------")
+
+    start1 = time.time()
 
     # 训练步骤开始
     model.train()
@@ -67,6 +72,10 @@ for i in range(epoch):
         if total_train_step % 100 == 0:
             print(f"训练次数: {total_train_step}，Loss: {loss.item()}")
 
+    end1 = time.time()
+    print(f"本轮训练时长为{end1 - start1}秒")
+    start2 = time.time()
+
     # 测试步骤开始
     model.eval()
     total_test_loss = 0
@@ -85,8 +94,14 @@ for i in range(epoch):
     print(f"整体测试集上的Loss: {total_test_loss}")
     print(f"整体测试集上的正确率: {total_accuracy / test_data_size}")
 
+    end2 = time.time()
+    print(f"本轮测试时长为{end2 - start2}秒\n")
+
     total_test_step += 1
 
     if i == 19:
         torch.save(model, f"./trained_models/model_gpu_{i + 1}.pth")
         print("模型已保存")
+
+end = time.time()
+print(f"训练+测试总时长为{end - start}秒")
