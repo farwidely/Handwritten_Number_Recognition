@@ -54,6 +54,28 @@ class MyMNIST2(nn.Module):
         return x
 
 
+# MyMNIST3用完整数据集训练20轮，耗时2min20s，测试精度可达到0.985
+class MyMNIST3(nn.Module):
+    def __init__(self):
+        super(MyMNIST3, self).__init__()
+        self.model = nn.Sequential(
+            nn.Conv2d(1, 8, 3, 1, 1),
+            nn.ReLU(inplace=True),
+            nn.Conv2d(8, 8, 3, 1, 1),
+            nn.ReLU(inplace=True),
+            nn.MaxPool2d(2),
+            nn.Flatten(),
+            nn.Linear(14 * 14 * 8, 1024),
+            nn.ReLU(inplace=True),
+            nn.Dropout(p=0.5),
+            nn.Linear(1024, 10)
+        )
+
+    def forward(self, x):
+        x = self.model(x)
+        return x
+
+
 # 测试模型能否运行
 if __name__ == '__main__':
     model = MyMNIST1()
