@@ -1,31 +1,29 @@
-from torch.utils.data import Subset, DataLoader
+from torch.utils.data import DataLoader
 import torchvision
+from torchvision import transforms
+
 from models import *
 
 # 设置计算硬件为cpu或cuda
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
-# 准备数据集
+# 准备数据集, 对数据集进行归一化
+transform = transforms.Compose([transforms.ToTensor(), transforms.Normalize((0.1307,), (0.3081,))])
 # 训练集
-train_data = torchvision.datasets.MNIST(root="./data", train=True, transform=torchvision.transforms.ToTensor(),
-                                        download=True)
+train_dataset = torchvision.datasets.MNIST(root="./data", train=True, transform=transform, download=True)
 # 测试集
-test_data = torchvision.datasets.MNIST(root="./data", train=False, transform=torchvision.transforms.ToTensor(),
-                                       download=True)
+test_dataset = torchvision.datasets.MNIST(root="./data", train=False, transform=transform, download=True)
 
-# 数据集长度调整
-# train_data = Subset(train_data, indices=range(0, 6000))
-# test_data = Subset(test_data, indices=range(0, 1000))
 
 # 查看数据集长度
-train_data_size = len(train_data)
-test_data_size = len(test_data)
+train_data_size = len(train_dataset)
+test_data_size = len(test_dataset)
 print(f"训练数据集的长度为: {train_data_size}")
 print(f"测试数据集的长度为: {test_data_size}")
 
 # 设置Dataloader
-train_dataloader = DataLoader(train_data, batch_size=64)
-test_dataloader = DataLoader(test_data, batch_size=64)
+train_dataloader = DataLoader(train_dataset, batch_size=64)
+test_dataloader = DataLoader(test_dataset, batch_size=64)
 
 # 初始化模型
 model = MyMNIST1()
@@ -45,7 +43,7 @@ total_train_step = 0
 # 记录测试的次数
 total_test_step = 0
 # 训练的轮数
-epoch = 30
+epoch = 20
 
 for i in range(epoch):
     print(f"------第 {i + 1} 轮训练开始------")
@@ -88,6 +86,6 @@ for i in range(epoch):
 
     total_test_step += 1
 
-    if i == 29:
+    if i == 19:
         torch.save(model, f"./trained_models/model_gpu_{i + 1}.pth")
         print("模型已保存")

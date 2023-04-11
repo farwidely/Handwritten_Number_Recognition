@@ -39,15 +39,15 @@ class MyMNIST2(nn.Module):
     def __init__(self):
         super(MyMNIST2, self).__init__()
         self.model = nn.Sequential(
-            nn.Conv2d(1, 16, 3, 1, 1),
+            nn.Conv2d(1, 8, 3, 1, 1),
             nn.ReLU(inplace=True),
-            nn.Conv2d(16, 16, 3, 1, 1),
+            nn.Conv2d(8, 8, 3, 1, 1),
             nn.ReLU(inplace=True),
             nn.MaxPool2d(2, stride=1),
             nn.Flatten(),
-            nn.Linear(27 * 27 * 16, 4096),
+            nn.Linear(27 * 27 * 8, 4096),
             nn.ReLU(inplace=True),
-            nn.Dropout(p=0.5, inplace=False),
+            nn.Dropout(p=0.5),
             nn.Linear(4096, 10)
         )
 
