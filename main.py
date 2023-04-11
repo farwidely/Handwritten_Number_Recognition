@@ -27,7 +27,7 @@ train_dataloader = DataLoader(train_dataset, batch_size=64)
 test_dataloader = DataLoader(test_dataset, batch_size=64)
 
 # 初始化模型
-model = MyMNIST1()
+model = MyMNIST2()
 model.to(device)
 
 # 损失函数

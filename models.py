@@ -2,8 +2,7 @@ import torch
 from torch import nn
 
 
-# MyMNIST1用完整数据集训练，测试精度可达到0.99
-# 若只用十分之一的数据训练，测试精度可达到0.96
+# MyMNIST1用完整数据集训练20轮，耗时30min，测试精度可达到0.99
 class MyMNIST1(nn.Module):
     def __init__(self):
         super(MyMNIST1, self).__init__()
@@ -33,8 +32,7 @@ class MyMNIST1(nn.Module):
         return x
 
 
-# MyMNIST2用完整数据集训练，测试精度可达到0.985
-# 若只用十分之一的数据训练，测试精度可达到0.95
+# MyMNIST2用完整数据集训练20轮，耗时3min24s，测试精度可达到0.99
 class MyMNIST2(nn.Module):
     def __init__(self):
         super(MyMNIST2, self).__init__()
