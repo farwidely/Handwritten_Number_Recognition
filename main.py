@@ -2,7 +2,6 @@ import time
 from torch.utils.data import DataLoader
 import torchvision
 from torchvision import transforms
-
 from models import *
 
 # 设置计算硬件为cpu或cuda
@@ -27,7 +26,7 @@ train_dataloader = DataLoader(train_dataset, batch_size=64)
 test_dataloader = DataLoader(test_dataset, batch_size=64)
 
 # 初始化模型
-model = MyMNIST2()
+model = MyMNIST1()
 model.to(device)
 
 # 损失函数
@@ -101,7 +100,7 @@ for i in range(epoch):
 
     if i == 19:
         torch.save(model, f"./trained_models/model_gpu_{i + 1}.pth")
-        print("模型已保存")
+        print("模型已保存\n")
 
 end = time.time()
-print(f"训练+测试总时长为{end - start}秒")
+print(f"训练+测试总时长为{end - start}秒\n")

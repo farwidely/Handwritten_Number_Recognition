@@ -2,6 +2,8 @@ import torch
 from torch import nn
 
 
+# 程序运行实验使用 GTX 1650 Super 显卡
+
 # MyMNIST1用完整数据集训练20轮，耗时30min，测试精度可达到0.99
 class MyMNIST1(nn.Module):
     def __init__(self):
