@@ -1,3 +1,4 @@
 data
 .idea
 trained_models
+log_*

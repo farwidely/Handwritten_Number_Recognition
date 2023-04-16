@@ -1,5 +1,6 @@
 import torch
 from torch import nn
+from torch.utils.tensorboard import SummaryWriter
 
 
 # 程序运行实验使用 GTX 1650 Super 显卡
@@ -80,7 +81,10 @@ class MyMNIST3(nn.Module):
 
 # 测试模型能否运行
 if __name__ == '__main__':
-    model = MyMNIST1()
+    model = MyMNIST3()
     input = torch.ones((64, 1, 28, 28))
     output = model(input)
-    print(output.shape)
+    # print(output.shape)
+    writer = SummaryWriter("log_models")
+    writer.add_graph(model, input)
+    writer.close()
