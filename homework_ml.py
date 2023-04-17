@@ -1,5 +1,4 @@
 import time
-
 import numpy as np
 import torch
 from sklearn.metrics import confusion_matrix
@@ -107,12 +106,14 @@ for i in range(epoch):
     # 测试步骤开始
     model.eval()
 
+    # 定义模型在训练集上的评价指标变量
     total_train_loss = 0
     total_train_accuracy = 0
     total_train_tp = np.array([0, 0, 0, 0, 0, 0, 0, 0, 0, 0])
     total_train_fp = np.array([0, 0, 0, 0, 0, 0, 0, 0, 0, 0])
     total_train_fn = np.array([0, 0, 0, 0, 0, 0, 0, 0, 0, 0])
 
+    # 定义模型在测试集上的评价指标变量
     total_test_loss = 0
     total_test_accuracy = 0
     total_test_tp = np.array([0, 0, 0, 0, 0, 0, 0, 0, 0, 0])
@@ -129,14 +130,11 @@ for i in range(epoch):
             total_train_loss += train_loss.item()
             train_accuracy = (outputs.argmax(1) == targets).sum()
             total_train_accuracy += train_accuracy
-            CM_train = confusion_matrix(outputs.argmax(1).to("cpu"), targets.to("cpu"))
+            CM_train = confusion_matrix(outputs.argmax(1).to("cpu"), targets.to("cpu"), labels=[0, 1, 2, 3, 4, 5, 6, 7,
+                                                                                                8, 9])
             TP = np.diag(CM_train)
             FP = CM_train.sum(axis=0) - np.diag(CM_train)
             FN = CM_train.sum(axis=1) - np.diag(CM_train)
-            print(TP)
-            print(FP)
-            print(FN)
-            print("\n")
             total_train_tp += TP
             total_train_fp += FP
             total_train_fn += FN
@@ -150,7 +148,8 @@ for i in range(epoch):
             total_test_loss += test_loss.item()
             test_accuracy = (outputs.argmax(1) == targets).sum()
             total_test_accuracy += test_accuracy
-            CM_test = confusion_matrix(outputs.argmax(1).to("cpu"), targets.to("cpu"))
+            CM_test = confusion_matrix(outputs.argmax(1).to("cpu"), targets.to("cpu"), labels=[0, 1, 2, 3, 4, 5, 6, 7,
+                                                                                               8, 9])
             TP = np.diag(CM_test)
             FP = CM_test.sum(axis=0) - np.diag(CM_test)
             FN = CM_test.sum(axis=1) - np.diag(CM_test)
@@ -158,137 +157,145 @@ for i in range(epoch):
             total_test_fp += FP
             total_test_fn += FN
 
+    train_Precision = total_train_tp / (total_train_tp + total_train_fp)
+    train_Recall = total_train_tp / (total_train_tp + total_train_fn)
+    train_f1 = 2 * train_Precision * train_Recall / (train_Precision + train_Recall)
     print(f"整体训练集上的Loss: {total_train_loss}")
     print(f"整体训练集上的正确率: {total_train_accuracy / train_data_size}")
-    print(f"label-0在训练集的查准率: {total_train_tp[0] / (total_train_tp[0] + total_train_fp[0])}")
-    print(f"label-0在训练集的查全率: {total_train_tp[0] / (total_train_tp[0] + total_train_fn[0])}")
-    print(f"label-1在训练集的查准率: {total_train_tp[1] / (total_train_tp[1] + total_train_fp[1])}")
-    print(f"label-1在训练集的查全率: {total_train_tp[1] / (total_train_tp[1] + total_train_fn[1])}")
-    print(f"label-2在训练集的查准率: {total_train_tp[2] / (total_train_tp[2] + total_train_fp[2])}")
-    print(f"label-2在训练集的查全率: {total_train_tp[2] / (total_train_tp[2] + total_train_fn[2])}")
-    print(f"label-3在训练集的查准率: {total_train_tp[3] / (total_train_tp[3] + total_train_fp[3])}")
-    print(f"label-3在训练集的查全率: {total_train_tp[3] / (total_train_tp[3] + total_train_fn[3])}")
-    print(f"label-4在训练集的查准率: {total_train_tp[4] / (total_train_tp[4] + total_train_fp[4])}")
-    print(f"label-4在训练集的查全率: {total_train_tp[4] / (total_train_tp[4] + total_train_fn[4])}")
-    print(f"label-5在训练集的查准率: {total_train_tp[5] / (total_train_tp[5] + total_train_fp[5])}")
-    print(f"label-5在训练集的查全率: {total_train_tp[5] / (total_train_tp[5] + total_train_fn[5])}")
-    print(f"label-6在训练集的查准率: {total_train_tp[6] / (total_train_tp[6] + total_train_fp[6])}")
-    print(f"label-6在训练集的查全率: {total_train_tp[6] / (total_train_tp[6] + total_train_fn[6])}")
-    print(f"label-7在训练集的查准率: {total_train_tp[7] / (total_train_tp[7] + total_train_fp[7])}")
-    print(f"label-7在训练集的查全率: {total_train_tp[7] / (total_train_tp[7] + total_train_fn[7])}")
-    print(f"label-8在训练集的查准率: {total_train_tp[8] / (total_train_tp[8] + total_train_fp[8])}")
-    print(f"label-8在训练集的查全率: {total_train_tp[8] / (total_train_tp[8] + total_train_fn[8])}")
-    print(f"label-9在训练集的查准率: {total_train_tp[9] / (total_train_tp[9] + total_train_fp[9])}")
-    print(f"label-9在训练集的查全率: {total_train_tp[9] / (total_train_tp[9] + total_train_fn[9])}")
+    print(f"label-0在训练集的查准率: {train_Precision[0]}")
+    print(f"label-0在训练集的查全率: {train_Recall[0]}")
+    print(f"label-0在训练集的F1-score: {train_f1[0]}")
+    print(f"label-1在训练集的查准率: {train_Precision[1]}")
+    print(f"label-1在训练集的查全率: {train_Recall[1]}")
+    print(f"label-1在训练集的F1-score: {train_f1[1]}")
+    print(f"label-2在训练集的查准率: {train_Precision[2]}")
+    print(f"label-2在训练集的查全率: {train_Recall[2]}")
+    print(f"label-2在训练集的F1-score: {train_f1[2]}")
+    print(f"label-3在训练集的查准率: {train_Precision[3]}")
+    print(f"label-3在训练集的查全率: {train_Recall[3]}")
+    print(f"label-3在训练集的F1-score: {train_f1[3]}")
+    print(f"label-4在训练集的查准率: {train_Precision[4]}")
+    print(f"label-4在训练集的查全率: {train_Recall[4]}")
+    print(f"label-4在训练集的F1-score: {train_f1[4]}")
+    print(f"label-5在训练集的查准率: {train_Precision[5]}")
+    print(f"label-5在训练集的查全率: {train_Recall[5]}")
+    print(f"label-5在训练集的F1-score: {train_f1[5]}")
+    print(f"label-6在训练集的查准率: {train_Precision[6]}")
+    print(f"label-6在训练集的查全率: {train_Recall[6]}")
+    print(f"label-6在训练集的F1-score: {train_f1[6]}")
+    print(f"label-7在训练集的查准率: {train_Precision[7]}")
+    print(f"label-7在训练集的查全率: {train_Recall[7]}")
+    print(f"label-7在训练集的F1-score: {train_f1[7]}")
+    print(f"label-8在训练集的查准率: {train_Precision[8]}")
+    print(f"label-8在训练集的查全率: {train_Recall[8]}")
+    print(f"label-8在训练集的F1-score: {train_f1[8]}")
+    print(f"label-9在训练集的查准率: {train_Precision[9]}")
+    print(f"label-9在训练集的查全率: {train_Recall[9]}")
+    print(f"label-9在训练集的F1-score: {train_f1[9]}")
 
+    # 将训练集结果载入tensorboard
     writer.add_scalar("train_loss", total_train_loss, total_test_step)
     writer.add_scalar("train_accuracy", total_train_accuracy / train_data_size, total_test_step)
-    writer.add_scalar("label-0_train_precision", total_train_tp[0] / (total_train_tp[0] + total_train_fp[0]),
-                      total_test_step)
-    writer.add_scalar("label-0_train_recall", total_train_tp[0] / (total_train_tp[0] + total_train_fn[0]),
-                      total_test_step)
-    writer.add_scalar("label-1_train_precision", total_train_tp[1] / (total_train_tp[1] + total_train_fp[1]),
-                      total_test_step)
-    writer.add_scalar("label-1_train_recall", total_train_tp[1] / (total_train_tp[1] + total_train_fn[1]),
-                      total_test_step)
-    writer.add_scalar("label-2_train_precision", total_train_tp[2] / (total_train_tp[2] + total_train_fp[2]),
-                      total_test_step)
-    writer.add_scalar("label-2_train_recall", total_train_tp[2] / (total_train_tp[2] + total_train_fn[2]),
-                      total_test_step)
-    writer.add_scalar("label-3_train_precision", total_train_tp[3] / (total_train_tp[3] + total_train_fp[3]),
-                      total_test_step)
-    writer.add_scalar("label-3_train_recall", total_train_tp[3] / (total_train_tp[3] + total_train_fn[3]),
-                      total_test_step)
-    writer.add_scalar("label-4_train_precision", total_train_tp[4] / (total_train_tp[4] + total_train_fp[4]),
-                      total_test_step)
-    writer.add_scalar("label-4_train_recall", total_train_tp[4] / (total_train_tp[4] + total_train_fn[4]),
-                      total_test_step)
-    writer.add_scalar("label-5_train_precision", total_train_tp[5] / (total_train_tp[5] + total_train_fp[5]),
-                      total_test_step)
-    writer.add_scalar("label-5_train_recall", total_train_tp[5] / (total_train_tp[5] + total_train_fn[5]),
-                      total_test_step)
-    writer.add_scalar("label-6_train_precision", total_train_tp[6] / (total_train_tp[6] + total_train_fp[6]),
-                      total_test_step)
-    writer.add_scalar("label-6_train_recall", total_train_tp[6] / (total_train_tp[6] + total_train_fn[6]),
-                      total_test_step)
-    writer.add_scalar("label-7_train_precision", total_train_tp[7] / (total_train_tp[7] + total_train_fp[7]),
-                      total_test_step)
-    writer.add_scalar("label-7_train_recall", total_train_tp[7] / (total_train_tp[7] + total_train_fn[7]),
-                      total_test_step)
-    writer.add_scalar("label-8_train_precision", total_train_tp[8] / (total_train_tp[8] + total_train_fp[8]),
-                      total_test_step)
-    writer.add_scalar("label-8_train_recall", total_train_tp[8] / (total_train_tp[8] + total_train_fn[8]),
-                      total_test_step)
-    writer.add_scalar("label-9_train_precision", total_train_tp[9] / (total_train_tp[9] + total_train_fp[9]),
-                      total_test_step)
-    writer.add_scalar("label-9_train_recall", total_train_tp[9] / (total_train_tp[9] + total_train_fn[9]),
-                      total_test_step)
+    writer.add_scalar("label-0_train_precision", train_Precision[0], total_test_step)
+    writer.add_scalar("label-0_train_recall", train_Recall[0], total_test_step)
+    writer.add_scalar("label-0_train_F1-score", train_f1[0], total_test_step)
+    writer.add_scalar("label-1_train_precision", train_Precision[1], total_test_step)
+    writer.add_scalar("label-1_train_recall", train_Recall[1], total_test_step)
+    writer.add_scalar("label-1_train_F1-score", train_f1[1], total_test_step)
+    writer.add_scalar("label-2_train_precision", train_Precision[2], total_test_step)
+    writer.add_scalar("label-2_train_recall", train_Recall[2], total_test_step)
+    writer.add_scalar("label-2_train_F1-score", train_f1[2], total_test_step)
+    writer.add_scalar("label-3_train_precision", train_Precision[3], total_test_step)
+    writer.add_scalar("label-3_train_recall", train_Recall[3], total_test_step)
+    writer.add_scalar("label-3_train_F1-score", train_f1[3], total_test_step)
+    writer.add_scalar("label-4_train_precision", train_Precision[4], total_test_step)
+    writer.add_scalar("label-4_train_recall", train_Recall[4], total_test_step)
+    writer.add_scalar("label-4_train_F1-score", train_f1[4], total_test_step)
+    writer.add_scalar("label-5_train_precision", train_Precision[5], total_test_step)
+    writer.add_scalar("label-5_train_recall", train_Recall[5], total_test_step)
+    writer.add_scalar("label-5_train_F1-score", train_f1[5], total_test_step)
+    writer.add_scalar("label-6_train_precision", train_Precision[6], total_test_step)
+    writer.add_scalar("label-6_train_recall", train_Recall[6], total_test_step)
+    writer.add_scalar("label-6_train_F1-score", train_f1[6], total_test_step)
+    writer.add_scalar("label-7_train_precision", train_Precision[7], total_test_step)
+    writer.add_scalar("label-7_train_recall", train_Recall[7], total_test_step)
+    writer.add_scalar("label-7_train_F1-score", train_f1[7], total_test_step)
+    writer.add_scalar("label-8_train_precision", train_Precision[8], total_test_step)
+    writer.add_scalar("label-8_train_recall", train_Recall[8], total_test_step)
+    writer.add_scalar("label-8_train_F1-score", train_f1[8], total_test_step)
+    writer.add_scalar("label-9_train_precision", train_Precision[9], total_test_step)
+    writer.add_scalar("label-9_train_recall", train_Recall[9], total_test_step)
+    writer.add_scalar("label-9_train_F1-score", train_f1[9], total_test_step)
 
+    test_Precision = total_test_tp / (total_test_tp + total_test_fp)
+    test_Recall = total_test_tp / (total_test_tp + total_test_fn)
+    test_f1 = 2 * test_Precision * test_Recall / (test_Precision + test_Recall)
     print(f"整体测试集上的Loss: {total_test_loss}")
     print(f"整体测试集上的正确率: {total_test_accuracy / test_data_size}")
-    print(f"label-0在测试集的查准率: {total_test_tp[0] / (total_test_tp[0] + total_test_fp[0])}")
-    print(f"label-0在测试集的查全率: {total_test_tp[0] / (total_test_tp[0] + total_test_fn[0])}")
-    print(f"label-1在测试集的查准率: {total_test_tp[1] / (total_test_tp[1] + total_test_fp[1])}")
-    print(f"label-1在测试集的查全率: {total_test_tp[1] / (total_test_tp[1] + total_test_fn[1])}")
-    print(f"label-2在测试集的查准率: {total_test_tp[2] / (total_test_tp[2] + total_test_fp[2])}")
-    print(f"label-2在测试集的查全率: {total_test_tp[2] / (total_test_tp[2] + total_test_fn[2])}")
-    print(f"label-3在测试集的查准率: {total_test_tp[3] / (total_test_tp[3] + total_test_fp[3])}")
-    print(f"label-3在测试集的查全率: {total_test_tp[3] / (total_test_tp[3] + total_test_fn[3])}")
-    print(f"label-4在测试集的查准率: {total_test_tp[4] / (total_test_tp[4] + total_test_fp[4])}")
-    print(f"label-4在测试集的查全率: {total_test_tp[4] / (total_test_tp[4] + total_test_fn[4])}")
-    print(f"label-5在测试集的查准率: {total_test_tp[5] / (total_test_tp[5] + total_test_fp[5])}")
-    print(f"label-5在测试集的查全率: {total_test_tp[5] / (total_test_tp[5] + total_test_fn[5])}")
-    print(f"label-6在测试集的查准率: {total_test_tp[6] / (total_test_tp[6] + total_test_fp[6])}")
-    print(f"label-6在测试集的查全率: {total_test_tp[6] / (total_test_tp[6] + total_test_fn[6])}")
-    print(f"label-7在测试集的查准率: {total_test_tp[7] / (total_test_tp[7] + total_test_fp[7])}")
-    print(f"label-7在测试集的查全率: {total_test_tp[7] / (total_test_tp[7] + total_test_fn[7])}")
-    print(f"label-8在测试集的查准率: {total_test_tp[8] / (total_test_tp[8] + total_test_fp[8])}")
-    print(f"label-8在测试集的查全率: {total_test_tp[8] / (total_test_tp[8] + total_test_fn[8])}")
-    print(f"label-9在测试集的查准率: {total_test_tp[9] / (total_test_tp[9] + total_test_fp[9])}")
-    print(f"label-9在测试集的查全率: {total_test_tp[9] / (total_test_tp[9] + total_test_fn[9])}")
+    print(f"label-0在测试集的查准率: {test_Precision[0]}")
+    print(f"label-0在测试集的查全率: {test_Recall[0]}")
+    print(f"label-0在测试集的F1-score: {test_f1[0]}")
+    print(f"label-1在测试集的查准率: {test_Precision[1]}")
+    print(f"label-1在测试集的查全率: {test_Recall[1]}")
+    print(f"label-1在测试集的F1-score: {test_f1[1]}")
+    print(f"label-2在测试集的查准率: {test_Precision[2]}")
+    print(f"label-2在测试集的查全率: {test_Recall[2]}")
+    print(f"label-2在测试集的F1-score: {test_f1[2]}")
+    print(f"label-3在测试集的查准率: {test_Precision[3]}")
+    print(f"label-3在测试集的查全率: {test_Recall[3]}")
+    print(f"label-3在测试集的F1-score: {test_f1[3]}")
+    print(f"label-4在测试集的查准率: {test_Precision[4]}")
+    print(f"label-4在测试集的查全率: {test_Recall[4]}")
+    print(f"label-4在测试集的F1-score: {test_f1[4]}")
+    print(f"label-5在测试集的查准率: {test_Precision[5]}")
+    print(f"label-5在测试集的查全率: {test_Recall[5]}")
+    print(f"label-5在测试集的F1-score: {test_f1[5]}")
+    print(f"label-6在测试集的查准率: {test_Precision[6]}")
+    print(f"label-6在测试集的查全率: {test_Recall[6]}")
+    print(f"label-6在测试集的F1-score: {test_f1[6]}")
+    print(f"label-7在测试集的查准率: {test_Precision[7]}")
+    print(f"label-7在测试集的查全率: {test_Recall[7]}")
+    print(f"label-7在测试集的F1-score: {test_f1[7]}")
+    print(f"label-8在测试集的查准率: {test_Precision[8]}")
+    print(f"label-8在测试集的查全率: {test_Recall[8]}")
+    print(f"label-8在测试集的F1-score: {test_f1[8]}")
+    print(f"label-9在测试集的查准率: {test_Precision[9]}")
+    print(f"label-9在测试集的查全率: {test_Recall[9]}")
+    print(f"label-9在测试集的F1-score: {test_f1[9]}")
 
+    # 将测试集结果载入tensorboard
     writer.add_scalar("test_loss", total_test_loss, total_test_step)
     writer.add_scalar("test_accuracy", total_test_accuracy / test_data_size, total_test_step)
-    writer.add_scalar("label-0_test_precision", total_test_tp[0] / (total_test_tp[0] + total_test_fp[0]),
-                      total_test_step)
-    writer.add_scalar("label-0_test_recall", total_test_tp[0] / (total_test_tp[0] + total_test_fn[0]),
-                      total_test_step)
-    writer.add_scalar("label-1_test_precision", total_test_tp[1] / (total_test_tp[1] + total_test_fp[1]),
-                      total_test_step)
-    writer.add_scalar("label-1_test_recall", total_test_tp[1] / (total_test_tp[1] + total_test_fn[1]),
-                      total_test_step)
-    writer.add_scalar("label-2_test_precision", total_test_tp[2] / (total_test_tp[2] + total_test_fp[2]),
-                      total_test_step)
-    writer.add_scalar("label-2_test_recall", total_test_tp[2] / (total_test_tp[2] + total_test_fn[2]),
-                      total_test_step)
-    writer.add_scalar("label-3_test_precision", total_test_tp[3] / (total_test_tp[3] + total_test_fp[3]),
-                      total_test_step)
-    writer.add_scalar("label-3_test_recall", total_test_tp[3] / (total_test_tp[3] + total_test_fn[3]),
-                      total_test_step)
-    writer.add_scalar("label-4_test_precision", total_test_tp[4] / (total_test_tp[4] + total_test_fp[4]),
-                      total_test_step)
-    writer.add_scalar("label-4_test_recall", total_test_tp[4] / (total_test_tp[4] + total_test_fn[4]),
-                      total_test_step)
-    writer.add_scalar("label-5_test_precision", total_test_tp[5] / (total_test_tp[5] + total_test_fp[5]),
-                      total_test_step)
-    writer.add_scalar("label-5_test_recall", total_test_tp[5] / (total_test_tp[5] + total_test_fn[5]),
-                      total_test_step)
-    writer.add_scalar("label-6_test_precision", total_test_tp[6] / (total_test_tp[6] + total_test_fp[6]),
-                      total_test_step)
-    writer.add_scalar("label-6_test_recall", total_test_tp[6] / (total_test_tp[6] + total_test_fn[6]),
-                      total_test_step)
-    writer.add_scalar("label-7_test_precision", total_test_tp[7] / (total_test_tp[7] + total_test_fp[7]),
-                      total_test_step)
-    writer.add_scalar("label-7_test_recall", total_test_tp[7] / (total_test_tp[7] + total_test_fn[7]),
-                      total_test_step)
-    writer.add_scalar("label-8_test_precision", total_test_tp[8] / (total_test_tp[8] + total_test_fp[8]),
-                      total_test_step)
-    writer.add_scalar("label-8_test_recall", total_test_tp[8] / (total_test_tp[8] + total_test_fn[8]),
-                      total_test_step)
-    writer.add_scalar("label-9_test_precision", total_test_tp[9] / (total_test_tp[9] + total_test_fp[9]),
-                      total_test_step)
-    writer.add_scalar("label-9_test_recall", total_test_tp[9] / (total_test_tp[9] + total_test_fn[9]),
-                      total_test_step)
+    writer.add_scalar("label-0_test_precision", test_Precision[0], total_test_step)
+    writer.add_scalar("label-0_test_recall", test_Recall[0], total_test_step)
+    writer.add_scalar("label-0_test_F1-score", test_f1[0], total_test_step)
+    writer.add_scalar("label-1_test_precision", test_Precision[1], total_test_step)
+    writer.add_scalar("label-1_test_recall", test_Recall[1], total_test_step)
+    writer.add_scalar("label-1_test_F1-score", test_f1[1], total_test_step)
+    writer.add_scalar("label-2_test_precision", test_Precision[2], total_test_step)
+    writer.add_scalar("label-2_test_recall", test_Recall[2], total_test_step)
+    writer.add_scalar("label-2_test_F1-score", test_f1[2], total_test_step)
+    writer.add_scalar("label-3_test_precision", test_Precision[3], total_test_step)
+    writer.add_scalar("label-3_test_recall", test_Recall[3], total_test_step)
+    writer.add_scalar("label-3_test_F1-score", test_f1[3], total_test_step)
+    writer.add_scalar("label-4_test_precision", test_Precision[4], total_test_step)
+    writer.add_scalar("label-4_test_recall", test_Recall[4], total_test_step)
+    writer.add_scalar("label-4_test_F1-score", test_f1[4], total_test_step)
+    writer.add_scalar("label-5_test_precision", test_Precision[5], total_test_step)
+    writer.add_scalar("label-5_test_recall", test_Recall[5], total_test_step)
+    writer.add_scalar("label-5_test_F1-score", test_f1[5], total_test_step)
+    writer.add_scalar("label-6_test_precision", test_Precision[6], total_test_step)
+    writer.add_scalar("label-6_test_recall", test_Recall[6], total_test_step)
+    writer.add_scalar("label-6_test_F1-score", test_f1[6], total_test_step)
+    writer.add_scalar("label-7_test_precision", test_Precision[7], total_test_step)
+    writer.add_scalar("label-7_test_recall", test_Recall[7], total_test_step)
+    writer.add_scalar("label-7_test_F1-score", test_f1[7], total_test_step)
+    writer.add_scalar("label-8_test_precision", test_Precision[8], total_test_step)
+    writer.add_scalar("label-8_test_recall", test_Recall[8], total_test_step)
+    writer.add_scalar("label-8_test_F1-score", test_f1[8], total_test_step)
+    writer.add_scalar("label-9_test_precision", test_Precision[9], total_test_step)
+    writer.add_scalar("label-9_test_recall", test_Recall[9], total_test_step)
+    writer.add_scalar("label-9_test_F1-score", test_f1[9], total_test_step)
 
     end2 = time.time()
     print(f"本轮测试时长为{end2 - start2}秒\n")
