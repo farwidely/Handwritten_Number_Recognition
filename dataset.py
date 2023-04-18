@@ -33,5 +33,5 @@ model = MyMNIST3()
 for data in train_dataloader:
     imgs, targets = data
     outputs = model(imgs)
-    print(outputs[0])
+    print(outputs)
 

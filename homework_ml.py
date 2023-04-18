@@ -106,14 +106,14 @@ for i in range(epoch):
     # 测试步骤开始
     model.eval()
 
-    # 定义模型在训练集上的评价指标变量
+    # 初始化模型在训练集上的评价指标变量
     total_train_loss = 0
     total_train_accuracy = 0
     total_train_tp = np.array([0, 0, 0, 0, 0, 0, 0, 0, 0, 0])
     total_train_fp = np.array([0, 0, 0, 0, 0, 0, 0, 0, 0, 0])
     total_train_fn = np.array([0, 0, 0, 0, 0, 0, 0, 0, 0, 0])
 
-    # 定义模型在测试集上的评价指标变量
+    # 初始化模型在测试集上的评价指标变量
     total_test_loss = 0
     total_test_accuracy = 0
     total_test_tp = np.array([0, 0, 0, 0, 0, 0, 0, 0, 0, 0])
@@ -130,8 +130,11 @@ for i in range(epoch):
             total_train_loss += train_loss.item()
             train_accuracy = (outputs.argmax(1) == targets).sum()
             total_train_accuracy += train_accuracy
+
+            # 计算训练集混淆矩阵
             CM_train = confusion_matrix(outputs.argmax(1).to("cpu"), targets.to("cpu"), labels=[0, 1, 2, 3, 4, 5, 6, 7,
                                                                                                 8, 9])
+
             TP = np.diag(CM_train)
             FP = CM_train.sum(axis=0) - np.diag(CM_train)
             FN = CM_train.sum(axis=1) - np.diag(CM_train)
@@ -148,8 +151,11 @@ for i in range(epoch):
             total_test_loss += test_loss.item()
             test_accuracy = (outputs.argmax(1) == targets).sum()
             total_test_accuracy += test_accuracy
+
+            # 计算测试集混淆矩阵
             CM_test = confusion_matrix(outputs.argmax(1).to("cpu"), targets.to("cpu"), labels=[0, 1, 2, 3, 4, 5, 6, 7,
                                                                                                8, 9])
+
             TP = np.diag(CM_test)
             FP = CM_test.sum(axis=0) - np.diag(CM_test)
             FN = CM_test.sum(axis=1) - np.diag(CM_test)
@@ -157,9 +163,11 @@ for i in range(epoch):
             total_test_fp += FP
             total_test_fn += FN
 
+    # 计算训练集查准率、查全率、F1指数
     train_Precision = total_train_tp / (total_train_tp + total_train_fp)
     train_Recall = total_train_tp / (total_train_tp + total_train_fn)
     train_f1 = 2 * train_Precision * train_Recall / (train_Precision + train_Recall)
+
     print(f"整体训练集上的Loss: {total_train_loss}")
     print(f"整体训练集上的正确率: {total_train_accuracy / train_data_size}")
     print(f"label-0在训练集的查准率: {train_Precision[0]}")
@@ -227,9 +235,11 @@ for i in range(epoch):
     writer.add_scalar("label-9_train_recall", train_Recall[9], total_test_step)
     writer.add_scalar("label-9_train_F1-score", train_f1[9], total_test_step)
 
+    # 计算测试集查准率、查全率、F1指数
     test_Precision = total_test_tp / (total_test_tp + total_test_fp)
     test_Recall = total_test_tp / (total_test_tp + total_test_fn)
     test_f1 = 2 * test_Precision * test_Recall / (test_Precision + test_Recall)
+
     print(f"整体测试集上的Loss: {total_test_loss}")
     print(f"整体测试集上的正确率: {total_test_accuracy / test_data_size}")
     print(f"label-0在测试集的查准率: {test_Precision[0]}")
