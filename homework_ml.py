@@ -318,6 +318,5 @@ for i in range(epoch):
 
 end = time.time()
 print(f"训练+测试总时长为{end - start}秒")
-print("学号：221115194    姓名：邓广远")
 
 writer.close()
